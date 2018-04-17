@@ -5,6 +5,18 @@ var selectedColor;
 var colorButtons = {};
 var polygons = [];
 
+
+function clearList(list) {
+    for (var i=0;i<list.length;i++) {
+        if (!list[i].map) {
+            list.splice(i, 1);
+            break;
+        }
+    }
+    
+    console.log(list)
+}
+
 function clearSelection () {
     if (selectedShape) {
         if (selectedShape.type !== 'marker') {
@@ -28,6 +40,7 @@ function setSelection (shape) {
 function deleteSelectedShape () {
     if (selectedShape) {
         selectedShape.setMap(null);
+        clearList(polygons);
     }
 }
 
@@ -192,24 +205,6 @@ function initialize () {
 
     google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
 
-/*        if (polygons.length>0){
-            console.log(polygons[0].getPaths())
-            paths = polygons[0].getPaths()
-
-            console.log(paths)
-            //paths.push(polygon.getPath().reverse())
-            console.log(polygons[0].getPath().getArray())
-            console.log(polygon.getPath().getArray())
-            //polygon.setPath(polygon.getPath().getArray().reverse())
-            paths.push(polygon.getPath())
-            polygons[0].setPaths(paths)
-
-        }
-        else{
-            polygons.push(polygon);
-        }*/
-
-
         //se esiste un poligono che contiene quello appena inserito allora questo fa da buco
         var newPolygon;
         for (var i=0;i<polygons.length;i++){
@@ -226,7 +221,7 @@ function initialize () {
             polygons.push(polygon);
             newPolygon = polygon;
         }
-
+        setSelection(newPolygon);
         // Switch back to non-drawing mode after drawing a shape.
         //drawingManager.setDrawingMode(null);
 
@@ -244,6 +239,7 @@ function initialize () {
                     }
                     else{
                         newPolygon.setMap(null);
+                        clearList(polygons);
                     }
                 }
             }
